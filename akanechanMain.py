@@ -4,6 +4,7 @@ from time import sleep
 import subprocess
 import os, sys
 import random
+import datetime
 
 
 GPIO.setmode(GPIO.BCM)
@@ -20,8 +21,19 @@ GPIO.setup(24, GPIO.IN)
 
 MP3_PATH = '/home/pi/Music/akanechan/akanechan_ohayou_01.mp3'
 
+# ローカルな現在の日付と時刻を取得
+dt = datetime.datetime.today()
+# 現在の時間を保存
+t = dt.time()
+print(t)  # 15:58:08.356501
 
-music_pass = "/home/pi/Music/akanechan/"
+if ( t > datetime.time(13,00,00) and t < datetime.time(14,00,00)):
+    music_pass = "/home/pi/Music/akanechan/ohiru/"
+    print("false")
+else:
+    print("true")
+    music_pass = "/home/pi/Music/akanechan/ohayou/"
+
 # ファイル名を取得
 files = os.listdir(music_pass)
 print("ファイル数:",str(len(files)))
