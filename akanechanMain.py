@@ -1,6 +1,10 @@
 import RPi.GPIO as GPIO
 import pygame.mixer
 from time import sleep
+import subprocess
+import os, sys
+import random
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(25, GPIO.OUT)
@@ -14,29 +18,36 @@ GPIO.setup(24, GPIO.IN)
 # （３）トグルスイッチがオフの状態で停止
 # （４）1/1000くらいで朝から抜いてくれるシチュを追加（１０分程度で）
 
-# mixerモジュールの初期化
-pygame.mixer.init()
-# .pyファイルからの相対パス？
-pygame.mixer.music.load("ファイル名.mp3")
-# 音楽再生、および再生回数の設定(-1はループ再生)
-pygame.mixer.music.play(-1)
+MP3_PATH = '/home/pi/Music/akanechan/akanechan_ohayou_01.mp3'
+
+
+music_pass = "/home/pi/Music/akanechan/"
+# ファイル名を取得
+files = os.listdir(music_pass)
+print("ファイル数:",str(len(files)))
+for file in files:
+    print("\t",file)
+    
+# 乱数で選曲
+r = random
+r.seed()
+play_no = r.randint(0, len(files)-1)
+print(play_no,"曲目を再生")
+file = files[play_no]
+
+fullpass = music_pass + file
+
+args = ['omxplayer', '-o', 'alsa', fullpass]
+
+process = subprocess.Popen(args)
+sleep(5)
 
 try:
-    while True:
-        if GPIO.input(24) == GPIO.HIGH:
-            GPIO.output(25, GPIO.HIGH)
-        else:
-            GPIO.output(25, GPIO.LOW)
-        sleep(0.01)
-        
-        if GPIO.input(23) == GPIO.HIGH:
-            # なんかこっちしか通らない
-            # 再生の終了
-            pygame.mixer.music.stop()
-            GPIO.output(22, GPIO.HIGH)
-        else:
-            GPIO.output(22, GPIO.LOW)
-        sleep(0.01)
+    if GPIO.input(24) == GPIO.HIGH:
+        GPIO.output(25, GPIO.HIGH)
+    else:
+        GPIO.output(25, GPIO.LOW)
+    sleep(0.01)
 
 except KeyboardInterrupt:
     pass
