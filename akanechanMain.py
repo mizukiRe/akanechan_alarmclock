@@ -54,24 +54,23 @@ while(start_time + datetime.timedelta(hours=1) > dt):
     # 現在の時間を保存
     t = dt.time()
     print(t)  # 15:58:08.356501
-    
-    print("茜ちゃんが褒めてくれる")
 
     try:
         if GPIO.input(24) == GPIO.HIGH:
+            # ランプを点灯する
             GPIO.output(25, GPIO.HIGH)
             print("akanechan")
             sleep(10)
             
         else:
+            print("茜ちゃんが褒めてくれる")
             # スライドスイッチがOFFになったときの挙動
-            music_pass = "/home/pi/Music/akanechan/amaamahome/"
+            # ランプを消灯する
             GPIO.output(25, GPIO.LOW)
             
+            music_pass = "/home/pi/Music/akanechan/amaamahome/"
             fullpass = getRandomVoiceFullFilepass(music_pass)
-
             args = ['omxplayer', '-o', 'alsa', fullpass]
-
             process = subprocess.Popen(args)
             sleep(60)
             GPIO.cleanup()
