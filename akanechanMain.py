@@ -37,7 +37,7 @@ def getRandomVoiceFullFilepass(music_pass):
     fullpass = music_pass + file
     return fullpass
 
-MP3_PATH = '/home/pi/Music/akanechan/akanechan_ohayou_01.mp3'
+#MP3_PATH = '/home/pi/Music/akanechan/akanechan_ohayou_01.mp3'
 
 start_time = datetime.datetime.now()
 # whileの条件でエラーなるのでとりあえずtrueになるように変数にセット
@@ -47,7 +47,8 @@ now = datetime.datetime.now()
 
 # 開始時刻＋１hまではスライドスイッチをオフを受け付ける
 # cronは実際の目覚ましの時間-1hを設定する想定
-while(start_time + datetime.timedelta(hours=1) > dt):
+#while(start_time + datetime.timedelta(hours=1) > dt):
+while(1 > 2): #テスト再生用
 
     # ローカルな現在の日付と時刻を取得
     dt = datetime.datetime.now()
@@ -59,7 +60,7 @@ while(start_time + datetime.timedelta(hours=1) > dt):
         if GPIO.input(24) == GPIO.HIGH:
             # ランプを点灯する
             GPIO.output(25, GPIO.HIGH)
-            print("akanechan")
+            print("akanechan待機中")
             sleep(10)
             
         else:
@@ -73,36 +74,33 @@ while(start_time + datetime.timedelta(hours=1) > dt):
             args = ['omxplayer', '-o', 'alsa', fullpass]
             process = subprocess.Popen(args)
             sleep(60)
+            # プロセスとGPIOを終了する
+            args = ['kill', str(process.pid)]
+            subprocess.Popen(args)
             GPIO.cleanup()
+            print("褒めてもらうの終わり")
             exit()
 
     except KeyboardInterrupt:
         pass
 
-# あとでプログラム自体を分ける
-if ( t > datetime.time(13,00,00) and t < datetime.time(14,00,00)):
-    music_pass = "/home/pi/Music/akanechan/ohiru/"
-    print("false")
-else:
-    print("true")
-    music_pass = "/home/pi/Music/akanechan/ohayou/"
+# 通常の音声を再生する
+music_pass = "/home/pi/Music/akanechan/ohayou/"
 
 fullpass = getRandomVoiceFullFilepass(music_pass)
-args = ['omxplayer', '-o', 'alsa', fullpass]
-
+# サブプロセスはコマンドライン実行をしてくれる
+args = ['omxplayer', '--vol', '-2000', '-o', 'alsa', fullpass]
 process = subprocess.Popen(args)
-sleep(5)
 
-try:
-    if GPIO.input(24) == GPIO.HIGH:
-        GPIO.output(25, GPIO.HIGH)
-    else:
-        GPIO.output(25, GPIO.LOW)
-    sleep(0.01)
+# 念のためここでもランプ消灯
+GPIO.output(25, GPIO.LOW)
+sleep(60)
 
-except KeyboardInterrupt:
-    pass
-
+# プロセスとGPIOを終了する
+args = ['kill', str(process.pid)]
+subprocess.Popen(args)
 GPIO.cleanup()
+print("通常目覚まし終わり")
+exit()
 
 
