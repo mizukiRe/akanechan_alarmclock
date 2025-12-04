@@ -47,8 +47,8 @@ now = datetime.datetime.now()
 
 # 開始時刻＋１hまではスライドスイッチをオフを受け付ける
 # cronは実際の目覚ましの時間-1hを設定する想定
-#while(start_time + datetime.timedelta(hours=1) > dt):
-while(1 > 2): #テスト再生用
+while(start_time + datetime.timedelta(hours=1) > dt):
+#while(1 > 2): #テスト再生用(通常の目覚ましボイスが再生される）
 
     # ローカルな現在の日付と時刻を取得
     dt = datetime.datetime.now()
