@@ -50,7 +50,7 @@ now = datetime.datetime.now()
 while(start_time + datetime.timedelta(hours=1) > dt):
 #while(1 > 2): #テスト再生用(通常の目覚ましボイスが再生される）
 
-    # ローカルな現在の日付と時刻を取得
+    # 現在の日付と時刻を取得
     dt = datetime.datetime.now()
     # 現在の時間を保存
     t = dt.time()
@@ -89,7 +89,9 @@ music_pass = "/home/pi/Music/akanechan/ohayou/"
 
 fullpass = getRandomVoiceFullFilepass(music_pass)
 # サブプロセスはコマンドライン実行をしてくれる
-args = ['omxplayer', '--vol', '-2000', '-o', 'alsa', fullpass]
+args = ['omxplayer', '-o', 'alsa', fullpass]
+# 音量おかしくなったら実行時にボリューム指定をする
+#args = ['omxplayer', '--vol', '-2000', '-o', 'alsa', fullpass]
 process = subprocess.Popen(args)
 
 # 念のためここでもランプ消灯
